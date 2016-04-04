@@ -5,7 +5,7 @@ function TimePickerCtrl($scope, $mdDialog, time, autoSwitch, $mdMedia) {
     this.VIEW_HOURS = 1;
     this.VIEW_MINUTES = 2;
     this.currentView = this.VIEW_HOURS;
-    this.time = moment(time);
+    this.time = moment.utc(time);
     this.autoSwitch = !!autoSwitch;
     console.log(autoSwitch);
     
@@ -287,20 +287,20 @@ module.directive("mdpTimePicker", ["$mdpTimePicker", "$timeout", function($mdpTi
             
             // update input element if model has changed
             ngModel.$formatters.unshift(function(value) {
-                var time = angular.isDate(value) && moment(value);
+                var time = angular.isDate(value) && moment.utc(value);
                 if(time && time.isValid()) 
                     updateInputElement(time.format(scope.timeFormat));
             });
             
             ngModel.$validators.format = function(modelValue, viewValue) {
-                return !viewValue || angular.isDate(viewValue) || moment(viewValue, scope.timeFormat, true).isValid();
+                return !viewValue || angular.isDate(viewValue) || moment.utc(viewValue, scope.timeFormat, true).isValid();
             };
             
             ngModel.$parsers.unshift(function(value) {
-                var parsed = moment(value, scope.timeFormat, true);
+                var parsed = moment.utc(value, scope.timeFormat, true);
                 if(parsed.isValid()) {
                     if(angular.isDate(ngModel.$modelValue)) {
-                        var originalModel = moment(ngModel.$modelValue);
+                        var originalModel = moment.utc(ngModel.$modelValue);
                         originalModel.minutes(parsed.minutes());
                         originalModel.hours(parsed.hours());
                         originalModel.seconds(parsed.seconds());
@@ -321,7 +321,7 @@ module.directive("mdpTimePicker", ["$mdpTimePicker", "$timeout", function($mdpTi
             }
             
             function updateTime(time) {
-                var value = moment(time, angular.isDate(time) ? null : scope.timeFormat, true),
+                var value = moment.utc(time, angular.isDate(time) ? null : scope.timeFormat, true),
                     strValue = value.format(scope.timeFormat);
 
                 if(value.isValid()) {
@@ -377,7 +377,7 @@ module.directive("mdpTimePicker", ["$mdpTimePicker", "$timeout", function($mdpTi
                     targetEvent: ev,
                     autoSwitch: scope.autoSwitch
                 }).then(function(time) {
-                    ngModel.$setViewValue(moment(time).format(scope.format));
+                    ngModel.$setViewValue(moment.utc(time).format(scope.format));
                     ngModel.$render();
                 });
             };
