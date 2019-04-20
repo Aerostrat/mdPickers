@@ -1,5 +1,15 @@
-(function() {
-"use strict";
+'use strict';
+(function (global, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['moment'], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory(
+            require('moment')
+        );
+    } else {
+        return factory(moment);
+    }
+})(this, function (moment) {
 /* global moment, angular */
 
 var module = angular.module("mdPickers", [
@@ -993,4 +1003,5 @@ module.directive("mdpTimePicker", ["$mdpTimePicker", "$timeout", function($mdpTi
     }
 }]);
 
-})();
+return module;
+});
