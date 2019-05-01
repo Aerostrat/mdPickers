@@ -29,7 +29,23 @@ gulp.task('assets', function() {
 gulp.task('build-app', function() {  
     return gulp.src(['src/mdPickers.js', 'src/core/**/*.js', 'src/components/**/*.js'])
         .pipe(concat('mdPickers.js'))
-        .pipe(wrap('(function() {\n"use strict";\n<%= contents %>\n})();'))
+        .pipe(wrap(
+            '\'use strict\';\n' +
+            '(function (global, factory) {\n' +
+            '    if (typeof define === \'function\' && define.amd) {\n' +
+            '        define([\'moment\'], factory);\n' +
+            '    } else if (typeof exports === \'object\') {\n' +
+            '        module.exports = factory(\n' +
+            '            require(\'moment\')\n' +
+            '        );\n' +
+            '    } else {\n' +
+            '        return factory(moment);\n' +
+            '    }\n' +
+            '})(this, function (moment) {\n' +
+                '<%= contents %>\n' +
+                'return module;\n' +
+            '});'
+        ))
         .pipe(sourcemaps.init())
         .pipe(gulp.dest(outputFolder))
         .pipe(rename({suffix: '.min'}))

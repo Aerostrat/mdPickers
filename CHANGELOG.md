@@ -1,3 +1,7 @@
+### 0.7.8
+
+Update the `build-app` wrapper to work with modules.
+
 ### 0.7.7
 
 Minor bugfixes
